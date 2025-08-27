@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Table, Button } from "react-bootstrap";
 import { fetchListUsers } from "../redux/user/user.slide";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { Bounce, toast } from "react-toastify";
 
 import UserCreateModal from "../modal/user.create.modal";
 import UserDeleteModal from "../modal/user.delete.modal";
@@ -23,7 +22,7 @@ const UsersTable = () => {
 
     useEffect(() => {
         dispatch(fetchListUsers());
-        toast("Fetch users successfully!")
+        // toast("Fetch users successfully!")
     }, [])
 
     const handleEditUser = (user: any) => {

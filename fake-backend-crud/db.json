@@ -48,18 +48,9 @@
       "email": "admin@gmail.com"
     },
     {
-      "id": 4
-    },
-    {
+      "email": "1",
+      "name": "2",
       "id": 5
-    },
-    {
-      "id": 6
-    },
-    {
-      "email": "dungnd1@gmail.com",
-      "name": "dungnd1",
-      "id": 7
     }
   ]
 }
