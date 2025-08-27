@@ -20,14 +20,14 @@ const Header = () => {
     }, [mode])
 
     return (
-        <Navbar className="bg-body-tertiary" data-bs-theme={mode}>
+        <Navbar className="bg-body-tertiary">
             <Container>
                 <Navbar.Brand href="#home">DungND Redux {users.length} </Navbar.Brand>
                 <Navbar.Toggle />
                 <Navbar.Collapse className="justify-content-end">
                     <Form.Check
-                        value={mode}
-                        onChange={(e) => dispatch(changeMode(e.target.value == "light" ? "dark" : "light"))}
+                        defaultChecked={mode === "dark" ? true : false}
+                        onChange={(e) => dispatch(changeMode(e.target.checked == true ? "dark" : "light"))}
                         type="switch"
                         id="custom-switch"
                         label={mode === "light" ? <Navbar.Text>Light Mode</Navbar.Text> : <Navbar.Text>Dark Mode</Navbar.Text>}
