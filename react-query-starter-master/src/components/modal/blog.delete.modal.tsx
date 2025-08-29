@@ -1,12 +1,36 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Spinner } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import { QUERY_KEY } from '../config/queryKey';
 
 const BlogDeleteModal = (props: any) => {
     const { dataBlog, isOpenDeleteModal, setIsOpenDeleteModal } = props;
 
+    const queryClient = useQueryClient();
+
     const handleSubmit = () => {
-        console.log({ id: dataBlog?.id });
+        // console.log({ id: dataBlog?.id });
+        mutation.mutate(dataBlog?.id);
     }
+
+    const mutation = useMutation({
+        mutationFn: async (id: number) => {
+            const res = await fetch(`http://localhost:8000/blogs/${id}`, {
+                method: 'DELETE',
+            });
+            return res.json();
+        },
+        onSuccess: () => {
+            alert("Blog deleted successfully");
+            setIsOpenDeleteModal(false);
+            // queryClient.invalidateQueries({ queryKey: ['fetchBlogs'] });
+            queryClient.invalidateQueries({ queryKey: QUERY_KEY.getAllBlog() });
+        },
+        onError: () => {
+            alert("Error deleting blog");
+        }
+    })
 
     return (
         <Modal
@@ -25,10 +49,25 @@ const BlogDeleteModal = (props: any) => {
                 Delete the blog: {dataBlog?.title ?? ""}
             </Modal.Body>
             <Modal.Footer>
-                <Button
-                    variant='warning'
-                    onClick={() => setIsOpenDeleteModal(false)} className='mr-2'>Cancel</Button>
-                <Button onClick={() => handleSubmit()}>Confirm</Button>
+                {!mutation.isPending ?
+                    <>
+                        <Button
+                            variant='warning'
+                            onClick={() => setIsOpenDeleteModal(false)} className='mr-2'>Cancel</Button>
+                        <Button onClick={() => handleSubmit()}>Confirm</Button>
+                    </>
+                    :
+                    <Button variant="primary" disabled>
+                        <Spinner
+                            as="span"
+                            animation="border"
+                            size="sm"
+                            role="status"
+                            aria-hidden="true"
+                        />
+                        Deleting...
+                    </Button>
+                }
             </Modal.Footer>
         </Modal>
     )

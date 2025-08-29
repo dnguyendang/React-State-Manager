@@ -6,7 +6,7 @@ interface IProps {
     setCurrentPage: (page: number) => void;
     currentPage: number;
 }
-const UsersPagination = (props: IProps) => {
+const BlogsPagination = (props: IProps) => {
     const { totalPages, currentPage, setCurrentPage } = props;
 
     return (
@@ -42,4 +42,4 @@ const UsersPagination = (props: IProps) => {
     );
 }
 
-export default UsersPagination;
+export default BlogsPagination;
