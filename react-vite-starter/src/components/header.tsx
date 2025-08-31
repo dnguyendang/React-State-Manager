@@ -24,7 +24,7 @@ const Header = () => {
             <Container>
                 <Navbar.Brand href="#home">DungND Redux {users.length} </Navbar.Brand>
                 <Navbar.Toggle />
-                <Navbar.Collapse className="justify-content-end">
+                <Navbar.Collapse className="justify-content -end">
                     <Form.Check
                         defaultChecked={mode === "dark" ? true : false}
                         onChange={(e) => dispatch(changeMode(e.target.checked == true ? "dark" : "light"))}
