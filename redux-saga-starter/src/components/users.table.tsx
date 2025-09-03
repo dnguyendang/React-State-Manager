@@ -17,26 +17,9 @@ function UsersTable() {
 
     const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
 
-    const users = [
-        {
-            "id": 1,
-            "name": "Eric",
-            "email": "eric@gmail.com"
-        },
-        {
-            "id": 2,
-            "name": "Hỏi Dân IT",
-            "email": "hoidanit@gmail.com"
-        },
-        {
-            "id": 3,
-            "name": "Hỏi Dân IT",
-            "email": "admin@gmail.com"
-        }
-    ]
-
     const dispatch = useAppDispatch();
     const isPending = useAppSelector(state => state.user.isPending)
+    const users = useAppSelector(state => state.user.data)
 
     useEffect(() => {
         dispatch(fetchUserPending())
@@ -95,7 +78,7 @@ function UsersTable() {
                     })}
                     {isPending === true &&
                         <tr>
-                            <td colSpan={4}>No data ...</td>
+                            <td colSpan={4}>Loading ...</td>
                         </tr>}
                 </tbody>
             </Table>

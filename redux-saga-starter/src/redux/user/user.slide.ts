@@ -1,10 +1,17 @@
 import { createSlice, PayloadAction, createAction } from "@reduxjs/toolkit"
+import { IUser } from "../../types/backend"
 
 export interface UserState {
     isPending: boolean
     isError: boolean
-    data: []
-    errors: []
+    data: IUser[]
+    errors: any
+    isCreating: boolean
+    isCreateSuccess: boolean
+    isUpdating: boolean
+    isUpdateSuccess: boolean
+    isDeleting: boolean
+    isDeleteSuccess: boolean
 }
 
 const initialState: UserState = {
@@ -12,12 +19,29 @@ const initialState: UserState = {
     isError: false,
     data: [],
     errors: [],
+    isCreating: false,
+    isCreateSuccess: false,
+    isUpdating: false,
+    isUpdateSuccess: false,
+    isDeleting: false,
+    isDeleteSuccess: false,
 }
 
 export const fetchUserPending = createAction("fetchUserPending")
-export const fetchUserSuccess = createAction<{ value: number }>("fetchUserSuccess")
-export const fetchUserFailed = createAction<{ value: number }>("fetchUserFailed")
+export const fetchUserSuccess = createAction<IUser[]>("fetchUserSuccess")
+export const fetchUserFailed = createAction("fetchUserFailed")
 
+export const createUserPending = createAction<{ email: string; name: string }>("createUserPending")
+export const createUserSuccess = createAction("createUserSuccess")
+export const createUserFailed = createAction("createUserFailed")
+
+export const updateUserPending = createAction<{ id: number, email: string; name: string }>("updateUserPending")
+export const updateUserSuccess = createAction("updateUserSuccess")
+export const updateUserFailed = createAction("updateUserFailed")
+
+export const deleteUserPending = createAction<{ id: number }>("deleteUserPending")
+export const deleteUserSuccess = createAction("deleteUserSuccess")
+export const deleteUserFailed = createAction("deleteUserFailed")
 
 export const userSlice = createSlice({
     name: "user",
@@ -32,17 +56,44 @@ export const userSlice = createSlice({
                 state.isError = false;
             })
             .addCase(fetchUserSuccess, (state, action) => {
-
+                state.isPending = false;
+                state.isError = false;
+                state.data = action.payload
             })
             .addCase(fetchUserFailed, (state, action) => {
-
+                state.isPending = false;
+                state.isError = true;
             })
 
+            .addCase(createUserPending, (state, action) => {
+                state.isCreating = true;
+                state.isCreateSuccess = false;
+            })
+            .addCase(createUserSuccess, (state, action) => {
+                state.isCreating = false;
+                state.isCreateSuccess = true;
+            })
+
+            .addCase(updateUserPending, (state, action) => {
+                state.isUpdating = true;
+                state.isUpdateSuccess = false;
+            })
+            .addCase(updateUserSuccess, (state, action) => {
+                state.isUpdating = false;
+                state.isUpdateSuccess = true;
+            })
+
+            .addCase(deleteUserPending, (state, action) => {
+                state.isDeleting = true;
+                state.isDeleteSuccess = false;
+            })
+            .addCase(deleteUserSuccess, (state, action) => {
+                state.isDeleting = false;
+                state.isDeleteSuccess = true;
+            })
     },
 })
 
 export const { } = userSlice.actions
-
-
 
 export default userSlice.reducer

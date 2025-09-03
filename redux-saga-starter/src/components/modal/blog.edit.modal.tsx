@@ -3,6 +3,9 @@ import Modal from 'react-bootstrap/Modal';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import { useState, useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { toast } from 'react-toastify';
+import { Spinner } from 'react-bootstrap';
 
 const BlogEditModal = (props: any) => {
     const { isOpenUpdateModal, setIsOpenUpdateModal, dataBlog } = props;
@@ -11,6 +14,20 @@ const BlogEditModal = (props: any) => {
     const [title, setTitle] = useState<string>("");
     const [author, setAuthor] = useState<string>("");
     const [content, setContent] = useState<string>("");
+
+    const dispatch = useAppDispatch();
+    const isUpdating = useAppSelector(state => state.blog.isUpdating)
+    const isUpdateSuccess = useAppSelector(state => state.blog.isUpdateSuccess)
+
+    useEffect(() => {
+        if (isUpdateSuccess) {
+            setTitle("")
+            setAuthor("")
+            setContent("")
+            setIsOpenUpdateModal(false)
+            toast.success("Update Succeed!")
+        }
+    }, [isUpdateSuccess])
 
     useEffect(() => {
         if (dataBlog?.id) {
@@ -80,10 +97,25 @@ const BlogEditModal = (props: any) => {
                     </FloatingLabel>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button
-                        variant='warning'
-                        onClick={() => setIsOpenUpdateModal(false)} className='mr-2'>Cancel</Button>
-                    <Button onClick={() => handleSubmit()}>Confirm</Button>
+                    {isUpdating === false ?
+                        <>
+                            <Button
+                                variant='warning'
+                                onClick={() => setIsOpenUpdateModal(false)} className='mr-2'>Cancel</Button>
+                            <Button onClick={() => handleSubmit()}>Confirm</Button>
+                        </>
+                        :
+                        <Button variant='primary' disabled>
+                            <Spinner
+                                as="span"
+                                animation='border'
+                                size='sm'
+                                role='status'
+                                aria-hidden='true'
+                            />
+                            &nbsp; Loading ...
+                        </Button>
+                    }
                 </Modal.Footer>
             </Modal>
         </>

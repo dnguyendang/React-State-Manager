@@ -1,11 +1,30 @@
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { useEffect } from 'react';
+import { deleteUserPending } from '../../redux/user/user.slide';
+import { Spinner } from 'react-bootstrap';
+import { toast } from 'react-toastify';
 
 const UserDeleteModal = (props: any) => {
     const { dataUser, isOpenDeleteModal, setIsOpenDeleteModal } = props;
 
+    const dispatch = useAppDispatch();
+    const isDeleting = useAppSelector(state => state.user.isDeleting)
+    const isDeleteSuccess = useAppSelector(state => state.user.isDeleteSuccess)
+
+    useEffect(() => {
+        if (isDeleteSuccess) {
+            setIsOpenDeleteModal(false);
+            toast.success("Delete succeed!")
+        }
+    }, [isDeleteSuccess])
+
     const handleSubmit = () => {
         console.log({ id: dataUser?.id });
+        if (dataUser?.id) {
+            dispatch(deleteUserPending({ id: dataUser.id }))
+        }
     }
 
     return (
@@ -25,10 +44,25 @@ const UserDeleteModal = (props: any) => {
                 Delete the user: {dataUser?.email ?? ""}
             </Modal.Body>
             <Modal.Footer>
-                <Button
-                    variant='warning'
-                    onClick={() => setIsOpenDeleteModal(false)} className='mr-2'>Cancel</Button>
-                <Button onClick={() => handleSubmit()}>Confirm</Button>
+                {isDeleting === false ?
+                    <>
+                        <Button
+                            variant='warning'
+                            onClick={() => setIsOpenDeleteModal(false)} className='mr-2'>Cancel</Button>
+                        <Button onClick={() => handleSubmit()}>Confirm</Button>
+                    </>
+                    :
+                    <Button variant='primary' disabled>
+                        <Spinner
+                            as="span"
+                            animation='border'
+                            size='sm'
+                            role='status'
+                            aria-hidden='true'
+                        />
+                        &nbsp; Saving ...
+                    </Button>
+                }
             </Modal.Footer>
         </Modal>
     )

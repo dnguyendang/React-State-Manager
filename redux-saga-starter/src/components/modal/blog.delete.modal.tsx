@@ -1,11 +1,30 @@
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { useEffect } from 'react';
+import { toast } from 'react-toastify';
+import { deleteBlogPending } from '../../redux/blog/blog.slide';
+import { Spinner } from 'react-bootstrap';
 
 const BlogDeleteModal = (props: any) => {
     const { dataBlog, isOpenDeleteModal, setIsOpenDeleteModal } = props;
 
+    const dispatch = useAppDispatch();
+    const isDeleting = useAppSelector(state => state.blog.isDeleting)
+    const isDeleteSuccess = useAppSelector(state => state.blog.isDeleteSuccess)
+
+    useEffect(() => {
+        if (isDeleteSuccess) {
+            setIsOpenDeleteModal(false)
+            toast.success("Delete Succeed!")
+        }
+    }, [isDeleteSuccess])
+
     const handleSubmit = () => {
         console.log({ id: dataBlog?.id });
+        if (dataBlog?.id) {
+            dispatch(deleteBlogPending({ id: dataBlog?.id }))
+        }
     }
 
     return (
@@ -25,10 +44,26 @@ const BlogDeleteModal = (props: any) => {
                 Delete the blog: {dataBlog?.title ?? ""}
             </Modal.Body>
             <Modal.Footer>
-                <Button
-                    variant='warning'
-                    onClick={() => setIsOpenDeleteModal(false)} className='mr-2'>Cancel</Button>
-                <Button onClick={() => handleSubmit()}>Confirm</Button>
+                {isDeleting === false ?
+                    <>
+                        <Button
+                            variant='warning'
+                            onClick={() => setIsOpenDeleteModal(false)} className='mr-2'>Cancel</Button>
+                        <Button onClick={() => handleSubmit()}>Confirm</Button>
+                    </>
+                    :
+                    <Button variant='primary' disabled>
+                        <Spinner
+                            as="span"
+                            animation='border'
+                            size='sm'
+                            role='status'
+                            aria-hidden='true'
+                        />
+                        &nbsp; Loading ...
+                    </Button>
+                }
+
             </Modal.Footer>
         </Modal>
     )
